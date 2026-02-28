@@ -93,3 +93,43 @@
     align-items: center;
     justify-content: space-between;
 }
+
+/* Sidebar Tree Thread Styles */
+.nav-message {
+    opacity: 0.9;
+}
+
+.message-snippet {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.nav-thread {
+    opacity: 0.8;
+    gap: 0.4rem;
+}
+
+.thread-summary-text {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.curved-arrow-icon {
+    opacity: 0.5;
+}
+
+.tree-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.tree-toggle:hover {
+    opacity: 1;
+}

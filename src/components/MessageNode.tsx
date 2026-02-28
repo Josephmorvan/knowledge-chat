@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { Message } from '../types';
-import { ChevronRight, ChevronDown, GitMerge, MessageCircle, Hash, MessageSquare, Reply } from 'lucide-react';
+import { ChevronRight, ChevronDown, GitMerge, MessageCircle, Hash, MessageSquare, Reply, CornerDownRight } from 'lucide-react';
 import './MessageNode.css';
 import './MessageNodeCitation.css';
 
@@ -8,11 +8,53 @@ interface MessageNodeProps {
     msg: Message;
     isNested?: boolean;
     onReply?: (msg: Message) => void;
-    onThread?: (messageId: string) => void;
+    onThread?: (messageId: string, mode: 'create' | 'view', threadId?: string) => void;
 }
 
 export function MessageNode({ msg, isNested = false, onReply, onThread }: MessageNodeProps) {
     const [isBranchOpen, setIsBranchOpen] = useState(false);
+    const [showThreadDropdown, setShowThreadDropdown] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (!showThreadDropdown) return;
+
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setShowThreadDropdown(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showThreadDropdown]);
+
+    const handleThreadIndicatorClick = () => {
+        if (!msg.threads || msg.threads.length === 0) return;
+        if (msg.threads.length === 1) {
+            onThread?.(msg.id, 'view', msg.threads[0].id);
+        } else {
+            setShowThreadDropdown(!showThreadDropdown);
+        }
+    };
+
+    const handleSelectThread = (threadId: string) => {
+        onThread?.(msg.id, 'view', threadId);
+        setShowThreadDropdown(false);
+    };
+
+    const formatThreadTime = (dateStr: string) => {
+        return new Date(dateStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    };
+
+    const getThreadDisplay = (thread: any) => {
+        if (thread.summary) return thread.summary;
+        const lastMsg = thread.messages[thread.messages.length - 1];
+        if (!lastMsg) return 'No messages';
+        return lastMsg.content.length > 40 ? lastMsg.content.substring(0, 40) + '...' : lastMsg.content;
+    };
 
     return (
         <div className={`message-wrapper ${isNested ? 'nested' : ''}`}>
@@ -29,16 +71,11 @@ export function MessageNode({ msg, isNested = false, onReply, onThread }: Messag
                     {msg.content}
                     {msg.role === 'ai' && (
                         <div className="message-actions-wrapper">
-                            {msg.threadCount && (
-                                <div className="thread-count-affordance" onClick={() => onThread?.(msg.id)}>
-                                    {msg.threadCount} threads
-                                </div>
-                            )}
                             <div className="message-actions">
                                 <button
                                     className="action-btn"
                                     title="Reply in thread"
-                                    onClick={() => onThread?.(msg.id)}
+                                    onClick={() => onThread?.(msg.id, 'create')}
                                 >
                                     <MessageSquare size={16} />
                                 </button>
@@ -54,6 +91,39 @@ export function MessageNode({ msg, isNested = false, onReply, onThread }: Messag
                     )}
                 </div>
             </div>
+
+            {msg.role === 'ai' && msg.threads && msg.threads.length > 0 && (
+                <div className="thread-count-affordance-row">
+                    <div className="thread-count-affordance-container" ref={dropdownRef}>
+                        <div className="thread-count-affordance" onClick={handleThreadIndicatorClick}>
+                            {msg.threads.length} {msg.threads.length === 1 ? 'thread' : 'threads'}
+                        </div>
+                        {showThreadDropdown && (
+                            <div className="thread-dropdown card">
+                                {msg.threads.map((thread) => (
+                                    <div
+                                        key={thread.id}
+                                        className="thread-dropdown-item"
+                                        onClick={() => handleSelectThread(thread.id)}
+                                    >
+                                        <div className="thread-item-content">
+                                            <CornerDownRight size={14} className="thread-curved-arrow" />
+                                            <div className="thread-item-details">
+                                                <div className="thread-item-header">
+                                                    <span className="thread-summary-text">{getThreadDisplay(thread)}</span>
+                                                    <span className="thread-timestamp">
+                                                        {formatThreadTime(thread.lastUpdated)}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
 
             {msg.references && msg.references.length > 0 && (
                 <div className={`references-container ${msg.role}`}>

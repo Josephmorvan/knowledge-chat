@@ -28,6 +28,13 @@ export interface Branch {
   mergeSummary?: string;
 }
 
+export interface Thread {
+  id: string;
+  messages: Message[];
+  lastUpdated: string;
+  summary?: string;
+}
+
 export interface Message {
   id: string;
   subjectId: string;
@@ -38,6 +45,9 @@ export interface Message {
   boundaryLabel?: string;
   branch?: Branch;
   references?: Reference[];
+  threads?: Thread[];
+  /** @deprecated Use threads instead */
   threadMessages?: Message[];
+  /** @deprecated Use threads?.length instead */
   threadCount?: number;
 }

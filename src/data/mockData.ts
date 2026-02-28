@@ -113,22 +113,49 @@ export const mockMessages: Message[] = [
         role: 'ai',
         content: 'Flash Attention 2 is essential. It avoids the O(n²) memory bottleneck by tiling the attention computation. It\'s a huge speedup for long context.',
         timestamp: '2026-02-27T15:12:00Z',
-        threadCount: 2,
-        threadMessages: [
+        threads: [
             {
-                id: 'm-ml-2-6-t1',
-                subjectId: 's-ml-2',
-                role: 'user',
-                content: 'What is attention computation?',
-                timestamp: '2026-02-27T15:14:00Z',
+                id: 't-ml-2-6-1',
+                lastUpdated: '2026-02-27T15:15:00Z',
+                summary: 'Attention calculation',
+                messages: [
+                    {
+                        id: 'm-ml-2-6-t1',
+                        subjectId: 's-ml-2',
+                        role: 'user',
+                        content: 'What is attention computation?',
+                        timestamp: '2026-02-27T15:14:00Z',
+                    },
+                    {
+                        id: 'm-ml-2-6-t2',
+                        subjectId: 's-ml-2',
+                        role: 'ai',
+                        content: 'Attention calculation computes a weighted sum of values based on query-key similarities, allowing the model to focus on relevant parts of the input.',
+                        timestamp: '2026-02-27T15:15:00Z',
+                    },
+                ]
             },
             {
-                id: 'm-ml-2-6-t2',
-                subjectId: 's-ml-2',
-                role: 'ai',
-                content: 'Attention calculation computes a weighted sum of values based on query-key similarities, allowing the model to focus on relevant parts of the input.',
-                timestamp: '2026-02-27T15:15:00Z',
-            },
+                id: 't-ml-2-6-2',
+                lastUpdated: '2026-02-27T15:20:00Z',
+                summary: 'PyTorch Flash Attention 2',
+                messages: [
+                    {
+                        id: 'm-ml-2-6-t3',
+                        subjectId: 's-ml-2',
+                        role: 'user',
+                        content: 'Is Flash Attention 2 available for PyTorch?',
+                        timestamp: '2026-02-27T15:18:00Z',
+                    },
+                    {
+                        id: 'm-ml-2-6-t4',
+                        subjectId: 's-ml-2',
+                        role: 'ai',
+                        content: 'Yes, it is integrated in PyTorch 2.0+ via the scaled_dot_product_attention function and also available as a standalone package.',
+                        timestamp: '2026-02-27T15:20:00Z',
+                    },
+                ]
+            }
         ],
     },
     { id: 'm-ml-2-7', subjectId: 's-ml-2', role: 'user', content: 'And KV cache optimization?', timestamp: '2026-02-27T15:15:00Z' },

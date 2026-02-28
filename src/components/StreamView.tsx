@@ -9,7 +9,7 @@ import './StreamViewMention.css';
 interface StreamViewProps {
     subject: Subject;
     messages: Message[];
-    onThread?: (messageId: string) => void;
+    onThread?: (messageId: string, mode: 'create' | 'view', threadId?: string) => void;
 }
 
 interface ReplyContext {
@@ -119,7 +119,7 @@ export function StreamView({ subject, messages, onThread }: StreamViewProps) {
                                             key={msg.id}
                                             msg={msg}
                                             onReply={(message) => handleReply({ subjectId: group.subjectId, message })}
-                                            onThread={(messageId) => onThread?.(messageId)}
+                                            onThread={(messageId, mode, threadId) => onThread?.(messageId, mode, threadId)}
                                         />
                                     ))}
                                     {subject.category === 'Folder' && (

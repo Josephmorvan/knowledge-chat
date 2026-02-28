@@ -52,19 +52,110 @@
     /* For actions positioning */
 }
 
+.thread-count-affordance-row {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: -0.25rem;
+    margin-bottom: 0.75rem;
+    padding-right: 0.5rem;
+}
+
+.thread-count-affordance-container {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
 .thread-count-affordance {
-    position: absolute;
-    bottom: -18px;
-    left: 0;
     font-size: 0.75rem;
     color: var(--accent-text-light);
     font-weight: 500;
     cursor: pointer;
     background: var(--accent-transparent);
-    padding: 2px 8px;
+    padding: 2px 10px;
     border-radius: 12px;
     transition: all 0.2s ease;
     border: 1px solid var(--accent-border);
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.thread-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    width: 240px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    z-index: 100;
+    padding: 4px;
+    animation: slideDown 0.2s ease-out forwards;
+    backdrop-filter: blur(10px);
+}
+
+.thread-dropdown-item {
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.thread-dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.thread-dropdown-item:hover {
+    background: var(--bg-secondary);
+    transform: translateX(-2px);
+}
+
+.thread-item-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 2px 0;
+}
+
+.thread-curved-arrow {
+    color: var(--text-muted);
+    opacity: 0.6;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.thread-item-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.thread-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.thread-summary-text {
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.thread-timestamp {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    opacity: 0.8;
 }
 
 .thread-count-affordance:hover {

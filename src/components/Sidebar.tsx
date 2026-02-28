@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { BookOpen, Hash, Home, Pin, Settings, Folder } from 'lucide-react';
-import type { Subject } from '../types';
+import { BookOpen, Hash, Home, Pin, Settings, Folder, CornerDownRight } from 'lucide-react';
+import type { Subject, Message } from '../types';
 import { ThemeToggle } from './ThemeToggle';
 import './Sidebar.css';
 import './SidebarTabs.css';
@@ -9,11 +9,13 @@ interface SidebarProps {
     subjects: Subject[];
     activeSubjectId: string | null;
     onSelectSubject: (id: string | null) => void;
+    allMessages: Message[];
+    onSelectThread: (messageId: string, threadId: string) => void;
 }
 
 type TabType = 'recent' | 'subject' | 'top';
 
-export function Sidebar({ subjects, activeSubjectId, onSelectSubject }: SidebarProps) {
+export function Sidebar({ subjects, activeSubjectId, onSelectSubject, allMessages, onSelectThread }: SidebarProps) {
     const [activeTab, setActiveTab] = useState<TabType>('recent');
 
     const pinnedSubjects = subjects.filter(s => s.isPinned);
@@ -85,6 +87,8 @@ export function Sidebar({ subjects, activeSubjectId, onSelectSubject }: SidebarP
                                 subjects={subjects}
                                 activeSubjectId={activeSubjectId}
                                 onSelectSubject={onSelectSubject}
+                                allMessages={allMessages}
+                                onSelectThread={onSelectThread}
                             />
                         ) : (
                             displayedSubjects.map(subject => (
@@ -123,11 +127,13 @@ interface SubjectTreeProps {
     subjects: Subject[];
     activeSubjectId: string | null;
     onSelectSubject: (id: string | null) => void;
+    allMessages: Message[];
+    onSelectThread: (messageId: string, threadId: string) => void;
     parentId?: string;
     level?: number;
 }
 
-function SubjectTree({ subjects, activeSubjectId, onSelectSubject, parentId, level = 0 }: SubjectTreeProps) {
+function SubjectTree({ subjects, activeSubjectId, onSelectSubject, allMessages, onSelectThread, parentId, level = 0 }: SubjectTreeProps) {
     // Find children of the current parent (if parentId is undefined, find root nodes)
     const children = subjects.filter(s =>
         parentId ? s.parentId === parentId : !s.parentId
@@ -144,6 +150,8 @@ function SubjectTree({ subjects, activeSubjectId, onSelectSubject, parentId, lev
                     allSubjects={subjects}
                     activeSubjectId={activeSubjectId}
                     onSelectSubject={onSelectSubject}
+                    allMessages={allMessages}
+                    onSelectThread={onSelectThread}
                     level={level}
                 />
             ))}
@@ -156,13 +164,17 @@ interface TreeNodeProps {
     allSubjects: Subject[];
     activeSubjectId: string | null;
     onSelectSubject: (id: string | null) => void;
+    allMessages: Message[];
+    onSelectThread: (messageId: string, threadId: string) => void;
     level: number;
 }
 
-function TreeNode({ node, allSubjects, activeSubjectId, onSelectSubject, level }: TreeNodeProps) {
+function TreeNode({ node, allSubjects, activeSubjectId, onSelectSubject, allMessages, onSelectThread, level }: TreeNodeProps) {
     const [isOpen, setIsOpen] = useState(true);
 
     const hasChildren = allSubjects.some(s => s.parentId === node.id);
+    const hasThreads = allMessages.some(m => m.subjectId === node.id && m.threads && m.threads.length > 0);
+    const isExpandable = hasChildren || hasThreads;
     const isFolder = node.category === 'Folder';
 
     const paddingLeft = `${(level * 12) + 12}px`;
@@ -179,7 +191,7 @@ function TreeNode({ node, allSubjects, activeSubjectId, onSelectSubject, level }
                 onClick={() => onSelectSubject(node.id)}
                 style={{ paddingLeft }}
             >
-                {hasChildren ? (
+                {isExpandable ? (
                     <div className="tree-toggle" onClick={handleToggle}>
                         {isOpen ? <span style={{ fontSize: '10px' }}>▼</span> : <span style={{ fontSize: '10px' }}>▶</span>}
                     </div>
@@ -201,10 +213,27 @@ function TreeNode({ node, allSubjects, activeSubjectId, onSelectSubject, level }
                     subjects={allSubjects}
                     activeSubjectId={activeSubjectId}
                     onSelectSubject={onSelectSubject}
+                    allMessages={allMessages}
+                    onSelectThread={onSelectThread}
                     parentId={node.id}
                     level={level + 1}
                 />
             )}
+
+            {isOpen && allMessages
+                .filter(m => m.subjectId === node.id && m.threads && m.threads.length > 0)
+                .flatMap(m => m.threads?.map(t => ({ ...t, messageId: m.id })) || [])
+                .map(thread => (
+                    <button
+                        key={thread.id}
+                        className="nav-item nav-thread tree-item"
+                        onClick={() => onSelectThread(thread.messageId, thread.id)}
+                        style={{ paddingLeft: `${(level + 1.8) * 12 + 12}px` }}
+                    >
+                        <CornerDownRight size={14} className="item-icon curved-arrow-icon" style={{ marginRight: '4px' }} />
+                        <span className="truncate thread-summary-text">{thread.summary || 'Thread'}</span>
+                    </button>
+                ))}
         </div>
     );
 }

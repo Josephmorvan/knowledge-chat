@@ -10,6 +10,8 @@ import './App.css';
 function App() {
   const [activeSubjectId, setActiveSubjectId] = useState<string | null>(null);
   const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
+  const [activeSubThreadId, setActiveSubThreadId] = useState<string | null>(null);
+  const [threadMode, setThreadMode] = useState<'create' | 'view'>('view');
 
   const activeSubject = activeSubjectId ? mockSubjects.find(s => s.id === activeSubjectId) : null;
 
@@ -48,12 +50,21 @@ function App() {
 
   const activeThreadMessage = activeThreadId ? mockMessages.find(m => m.id === activeThreadId) : null;
 
+  const handleSelectThreadFromSidebar = (messageId: string, threadId: string) => {
+    setActiveSubjectId(mockMessages.find(m => m.id === messageId)?.subjectId || null);
+    setActiveThreadId(messageId);
+    setActiveSubThreadId(threadId);
+    setThreadMode('view');
+  };
+
   return (
     <div className="app-layout">
       <Sidebar
         subjects={mockSubjects}
         activeSubjectId={activeSubjectId}
         onSelectSubject={setActiveSubjectId}
+        allMessages={mockMessages}
+        onSelectThread={handleSelectThreadFromSidebar}
       />
       <main className={`main-content ${activeThreadId ? 'has-thread' : ''}`}>
         <div className="stream-container">
@@ -63,7 +74,11 @@ function App() {
             <StreamView
               subject={activeSubject}
               messages={currentMessages}
-              onThread={setActiveThreadId}
+              onThread={(id, mode, threadId) => {
+                setActiveThreadId(id);
+                setThreadMode(mode);
+                setActiveSubThreadId(threadId || null);
+              }}
             />
           ) : (
             <div className="not-found">Subject not found</div>
@@ -82,21 +97,25 @@ function App() {
             </div>
             <div className="thread-content-placeholder">
               <div className="thread-replies-list">
-                {activeThreadMessage.threadMessages?.map(tMsg => (
-                  <MessageNode
-                    key={tMsg.id}
-                    msg={tMsg}
-                    isNested={true}
-                  />
-                ))}
+                {threadMode === 'view' && (() => {
+                  const thread = activeThreadMessage.threads?.find(t => t.id === activeSubThreadId)
+                    || activeThreadMessage.threads?.[0];
+                  return thread?.messages.map(tMsg => (
+                    <MessageNode
+                      key={tMsg.id}
+                      msg={tMsg}
+                      isNested={true}
+                    />
+                  ));
+                })()}
               </div>
               <div className="thread-reply-area">
-                {(!activeThreadMessage.threadMessages || activeThreadMessage.threadMessages.length === 0) && (
+                {(threadMode === 'create' || !activeThreadMessage.threads || activeThreadMessage.threads.length === 0) && (
                   <div className="reply-preview">
                     <div className="reply-preview-content">
                       <div className="reply-preview-details">
                         <div className="reply-preview-subject">
-                          <span>Reply to Thread</span>
+                          <span>{threadMode === 'create' ? 'Start New Thread' : 'Reply to Thread'}</span>
                         </div>
                         <div className="reply-quoted-text">
                           {activeThreadMessage.content}
@@ -105,7 +124,7 @@ function App() {
                     </div>
                   </div>
                 )}
-                <input type="text" className="stream-input" placeholder="Reply to thread..." />
+                <input type="text" className="stream-input" placeholder={threadMode === 'create' ? "Start a thread..." : "Reply to thread..."} />
               </div>
             </div>
           </aside>
