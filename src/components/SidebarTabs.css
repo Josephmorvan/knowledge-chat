@@ -1,0 +1,74 @@
+/* Update SidebarTabs.css to add tree node specific styling */
+
+.sidebar-tabs {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0 0.75rem 0.5rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.sidebar-tab {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    border: none;
+}
+
+.sidebar-tab:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-tertiary);
+}
+
+.sidebar-tab.active {
+    color: var(--accent-color);
+    background-color: var(--accent-transparent);
+}
+
+/* Tree Navigation Styles */
+
+.subject-list-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.tree-node-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.tree-node {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.tree-item {
+    position: relative;
+}
+
+.tree-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    margin-right: 4px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.tree-toggle:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}

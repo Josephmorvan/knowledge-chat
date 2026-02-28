@@ -1,0 +1,242 @@
+.message-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.message-wrapper.nested {
+    margin-bottom: 0.5rem;
+}
+
+.message-bubble-container {
+    display: flex;
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+.message-bubble-container.user {
+    justify-content: flex-end;
+}
+
+.message-bubble-container.ai {
+    justify-content: flex-start;
+}
+
+.sparkle-icon {
+    color: #4285f4;
+    /* Brand blue sparkle */
+}
+
+.message-bubble {
+    max-width: 80%;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-lg);
+    line-height: 1.5;
+    font-size: 0.95rem;
+}
+
+.message-bubble-container.user .message-bubble {
+    background-color: var(--accent-color);
+    color: var(--accent-text);
+    border-bottom-right-radius: 4px;
+}
+
+.message-bubble-container.ai .message-bubble {
+    background-color: transparent;
+    color: var(--text-primary);
+    border: none;
+    box-shadow: none;
+    padding-left: 0;
+    padding-top: 0.5rem;
+    max-width: 100%;
+    position: relative;
+    /* For actions positioning */
+}
+
+.thread-count-affordance {
+    position: absolute;
+    bottom: -18px;
+    left: 0;
+    font-size: 0.75rem;
+    color: var(--accent-text-light);
+    font-weight: 500;
+    cursor: pointer;
+    background: var(--accent-transparent);
+    padding: 2px 8px;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    border: 1px solid var(--accent-border);
+}
+
+.thread-count-affordance:hover {
+    background: var(--accent-color);
+    color: white;
+}
+
+.message-actions-wrapper {
+    position: absolute;
+    top: -24px;
+    right: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    z-index: 20;
+}
+
+.message-bubble:hover .message-actions-wrapper,
+.thread-count-affordance:hover+.message-actions-wrapper,
+.message-actions-wrapper:hover {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(-4px);
+}
+
+.message-actions {
+    display: flex;
+    gap: 8px;
+    /* Added gap between individual squares */
+    padding: 0;
+    /* Remove padding from container */
+    background: transparent;
+    /* Container is now transparent */
+    border: none;
+    box-shadow: none;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    /* Rounded square */
+    background: var(--bg-primary);
+    border: 1px solid var(--border-soft);
+    color: var(--text-muted);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.action-btn:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transform: scale(1.05);
+    box-shadow: var(--shadow-md);
+}
+
+.dark .action-btn {
+    background: #2a2a2a;
+    border-color: #444;
+}
+
+
+/* Branching Styles */
+.branch-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+.branch-toggle {
+    display: inline-flex;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    align-self: flex-start;
+    margin-left: 2rem;
+    opacity: 0.8;
+}
+
+.branch-toggle:hover {
+    opacity: 1;
+}
+
+.branch-content {
+    margin-top: 0.5rem;
+    animation: slideDown 0.2s ease-out forwards;
+}
+
+.branch-content.indented {
+    margin-left: 2rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--border-color);
+}
+
+.references-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+
+.branch-exploratory {
+    margin-left: 2rem;
+    margin-top: 0.5rem;
+}
+
+.merge-summary {
+    padding: 1rem;
+    background-color: var(--accent-transparent);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.merge-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.text-accent {
+    color: var(--accent-color);
+}
+
+.merge-text {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    line-height: 1.5;
+}
+
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Boundaries */
+.soft-boundary {
+    display: flex;
+    align-items: center;
+    margin: 1.5rem 0;
+    opacity: 0.5;
+}
+
+.boundary-line {
+    flex: 1;
+    height: 1px;
+    background-color: var(--border-color);
+}
+
+.boundary-label {
+    padding: 0 1rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}

@@ -1,0 +1,41 @@
+/* Add to the bottom of MessageNode.css (actually I will overwrite) */
+.references-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    width: 100%;
+}
+
+.references-container.user {
+    align-items: flex-end;
+}
+
+.references-container.ai {
+    align-items: flex-start;
+}
+
+.citation-card {
+    max-width: 70%;
+    padding: 0.75rem 1rem;
+    background-color: var(--bg-tertiary);
+    border-left: 3px solid var(--accent-color);
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+.citation-header {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.citation-snippet {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 0;
+    line-height: 1.4;
+}
